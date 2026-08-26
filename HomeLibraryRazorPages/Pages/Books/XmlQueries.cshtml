@@ -1,0 +1,105 @@
+@page
+@model HomeLibraryRazorPages.Pages.Books.XmlQueriesModel
+@{
+    ViewData["Title"] = "XML-запросы";
+}
+
+<h2>XML-запросы к оглавлениям книг</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Поиск по главам</h5>
+                <p class="card-text">Найти книги, содержащие главу с ключевым словом</p>
+                <form method="post" asp-page-handler="SearchByChapter">
+                    <div class="mb-2">
+                        <input type="text" name="keyword" class="form-control" placeholder="Ключевое слово..."
+                               value="@Model.Keyword" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Найти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Количество глав</h5>
+                <p class="card-text">Количество глав в каждой книге (из XML)</p>
+                <form method="post" asp-page-handler="ChapterCounts">
+                    <button type="submit" class="btn btn-primary btn-sm">Выполнить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Страниц по XML</h5>
+                <p class="card-text">Суммарное кол-во страниц по XML атрибутам</p>
+                <form method="post" asp-page-handler="PageCounts">
+                    <button type="submit" class="btn btn-primary btn-sm">Выполнить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.ChapterResults != null)
+{
+    <h4>Результат поиска: "@Model.Keyword"</h4>
+    if (!Model.ChapterResults.Any())
+    {
+        <div class="alert alert-warning">Ничего не найдено.</div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr><th>ID</th><th>Название</th><th>Автор</th><th>Год</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.ChapterResults)
+                {
+                    <tr><td>@r.Id</td><td>@r.Title</td><td>@r.Author</td><td>@r.Year</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@if (Model.ChapterCounts != null)
+{
+    <h4>Количество глав в книгах</h4>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr><th>ID</th><th>Название</th><th>Автор</th><th>Кол-во глав</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model.ChapterCounts)
+            {
+                <tr><td>@c.Id</td><td>@c.Title</td><td>@c.Author</td><td>@c.ChapterCount</td></tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (Model.PageCounts != null)
+{
+    <h4>Суммарные страницы по XML-оглавлению</h4>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr><th>ID</th><th>Название</th><th>Автор</th><th>Страниц (XML)</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.PageCounts)
+            {
+                <tr><td>@p.Id</td><td>@p.Title</td><td>@p.Author</td><td>@p.TotalXmlPages</td></tr>
+            }
+        </tbody>
+    </table>
+}

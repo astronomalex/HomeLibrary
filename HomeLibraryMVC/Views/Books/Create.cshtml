@@ -1,0 +1,86 @@
+@model Book
+
+@{
+    ViewData["Title"] = "Добавить книгу";
+}
+
+<h2>Добавить книгу</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Author" class="form-label"></label>
+                    <input asp-for="Author" class="form-control" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label asp-for="Year" class="form-label"></label>
+                    <input asp-for="Year" class="form-control" type="number" />
+                    <span asp-validation-for="Year" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Pages" class="form-label"></label>
+                    <input asp-for="Pages" class="form-control" type="number" />
+                    <span asp-validation-for="Pages" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Genre" class="form-label"></label>
+                    <input asp-for="Genre" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="ISBN" class="form-label"></label>
+                    <input asp-for="ISBN" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TableOfContentsXml" class="form-label">Оглавление (XML)</label>
+                <textarea asp-for="TableOfContentsXml" id="toc-editor" class="form-control" rows="10"></textarea>
+                <small class="text-muted">Редактируйте XML-оглавление книги</small>
+            </div>
+
+            <button type="submit" class="btn btn-success">Создать</button>
+            <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script>
+        var editor = CodeMirror.fromTextArea(document.querySelector('#toc-editor'), {
+            mode: 'xml',
+            theme: 'dracula',
+            lineNumbers: true,
+            indentUnit: 2,
+            tabSize: 2,
+            lineWrapping: true
+        });
+        document.querySelector('form').addEventListener('submit', function () { editor.save(); });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

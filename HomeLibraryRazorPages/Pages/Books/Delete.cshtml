@@ -1,0 +1,38 @@
+@page "{id:int}"
+@model HomeLibraryRazorPages.Pages.Books.DeleteModel
+@{
+    ViewData["Title"] = "Удалить книгу";
+}
+
+<h2>Удалить книгу</h2>
+
+<div class="alert alert-danger">
+    <h5>Вы уверены, что хотите удалить эту книгу?</h5>
+</div>
+
+@if (Model.Book != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Название</dt>
+                <dd class="col-sm-9">@Model.Book.Title</dd>
+
+                <dt class="col-sm-3">Автор</dt>
+                <dd class="col-sm-9">@Model.Book.Author</dd>
+
+                <dt class="col-sm-3">Год издания</dt>
+                <dd class="col-sm-9">@(Model.Book.Year?.ToString() ?? "—")</dd>
+
+                <dt class="col-sm-3">Жанр</dt>
+                <dd class="col-sm-9">@(Model.Book.Genre ?? "—")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form method="post" class="mt-3">
+        <input type="hidden" asp-for="Book.Id" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-page="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+}

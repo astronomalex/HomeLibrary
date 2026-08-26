@@ -1,0 +1,94 @@
+@page "{id:int}"
+@model HomeLibraryRazorPages.Pages.Books.EditModel
+@{
+    ViewData["Title"] = "Редактировать: " + Model.Book?.Title;
+}
+
+<h2>Редактировать книгу</h2>
+<hr />
+
+@if (Model.Book == null)
+{
+    <div class="alert alert-warning">Книга не найдена.</div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-10">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Book.Id" />
+                <input type="hidden" asp-for="Book.CreatedAt" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="Book.Title" class="form-label"></label>
+                        <input asp-for="Book.Title" class="form-control" />
+                        <span asp-validation-for="Book.Title" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Book.Author" class="form-label"></label>
+                        <input asp-for="Book.Author" class="form-control" />
+                        <span asp-validation-for="Book.Author" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="Book.Year" class="form-label"></label>
+                        <input asp-for="Book.Year" class="form-control" type="number" />
+                        <span asp-validation-for="Book.Year" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Book.Pages" class="form-label"></label>
+                        <input asp-for="Book.Pages" class="form-control" type="number" />
+                        <span asp-validation-for="Book.Pages" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Book.Genre" class="form-label"></label>
+                        <input asp-for="Book.Genre" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="Book.ISBN" class="form-label"></label>
+                        <input asp-for="Book.ISBN" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Book.Description" class="form-label"></label>
+                    <textarea asp-for="Book.Description" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Book.TableOfContentsXml" class="form-label">Оглавление (XML)</label>
+                    <textarea asp-for="Book.TableOfContentsXml" id="toc-editor" class="form-control" rows="10"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a asp-page="Index" class="btn btn-secondary">Отмена</a>
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script>
+        var editor = CodeMirror.fromTextArea(document.querySelector('#toc-editor'), {
+            mode: 'xml',
+            theme: 'dracula',
+            lineNumbers: true,
+            indentUnit: 2,
+            tabSize: 2,
+            lineWrapping: true
+        });
+        document.querySelector('form').addEventListener('submit', function () { editor.save(); });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

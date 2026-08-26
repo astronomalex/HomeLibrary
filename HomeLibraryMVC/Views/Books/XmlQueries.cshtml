@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "XML-запросы";
+}
+
+<h2>XML-запросы к оглавлениям книг</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Поиск по главам</h5>
+                <p class="card-text">Найти книги, содержащие главу с ключевым словом в названии</p>
+                <form asp-action="SearchByChapter" method="post">
+                    <div class="mb-2">
+                        <input type="text" name="keyword" class="form-control" placeholder="Ключевое слово..."
+                               value="@ViewBag.Keyword" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Найти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Количество глав</h5>
+                <p class="card-text">Показать количество глав в каждой книге (из XML)</p>
+                <form asp-action="GetChapterCounts" method="post">
+                    <button type="submit" class="btn btn-primary btn-sm">Выполнить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Страниц по XML</h5>
+                <p class="card-text">Суммарное количество страниц по оглавлению (из XML атрибутов)</p>
+                <form asp-action="GetXmlPageCounts" method="post">
+                    <button type="submit" class="btn btn-primary btn-sm">Выполнить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.ChapterResults != null)
+{
+    <h4>Результат поиска по ключевому слову: "@ViewBag.Keyword"</h4>
+    var results = (List<HomeLibraryMVC.Services.XmlQueryResult>)ViewBag.ChapterResults;
+    if (!results.Any())
+    {
+        <div class="alert alert-warning">Ничего не найдено.</div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr><th>ID</th><th>Название</th><th>Автор</th><th>Год</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var r in results)
+                {
+                    <tr><td>@r.Id</td><td>@r.Title</td><td>@r.Author</td><td>@r.Year</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@if (ViewBag.ChapterCounts != null)
+{
+    <h4>Количество глав в книгах</h4>
+    var counts = (List<HomeLibraryMVC.Services.ChapterCountResult>)ViewBag.ChapterCounts;
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr><th>ID</th><th>Название</th><th>Автор</th><th>Кол-во глав</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var c in counts)
+            {
+                <tr><td>@c.Id</td><td>@c.Title</td><td>@c.Author</td><td>@c.ChapterCount</td></tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (ViewBag.PageCounts != null)
+{
+    <h4>Суммарные страницы по XML-оглавлению</h4>
+    var pages = (List<HomeLibraryMVC.Services.XmlPageCountResult>)ViewBag.PageCounts;
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr><th>ID</th><th>Название</th><th>Автор</th><th>Страниц (XML)</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var p in pages)
+            {
+                <tr><td>@p.Id</td><td>@p.Title</td><td>@p.Author</td><td>@p.TotalXmlPages</td></tr>
+            }
+        </tbody>
+    </table>
+}
